@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="#{application.name}"></title>
+
+    <link rel="shortcut icon" href="/images/favicon.png">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+            integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet"
+          type="text/css"/>
+</head>
+<body>
+
+<section class="container">
+
+    <form th:action="@{/issue}" th:object="${issue}" method="post">
+
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <label class="col-form-label" th:text="#{issue.project}"></label>
+            </div>
+            <div class="col-sm-8">
+                <select class="form-control" th:field="*{project}">
+                    <option th:value="${null}"></option>
+                    <option th:each="p : ${projects}"
+                            th:text="${p.name}"
+                            th:value="${p.id}"></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <label class="col-form-label" th:text="#{issue.state}"></label>
+            </div>
+            <div class="col-sm-8">
+                <select class="form-control" th:field="*{state}">
+                    <option th:value="${null}"></option>
+                    <option th:each="s : ${T(com.logintegra.wsbbugtracker.enums.State).values()}"
+                            th:text="${#messages.msg('state.' + s)}"
+                            th:value="${s}"></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <label class="col-form-label" th:text="#{issue.assignee}"></label>
+            </div>
+            <div class="col-sm-8">
+                <select class="form-control" th:field="*{assignee}">
+                    <option th:value="${null}"></option>
+                    <option th:each="p : ${people}"
+                            th:text="${p.name}"
+                            th:value="${p.id}"></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <label class="col-form-label" th:text="#{issue.title}"></label>
+            </div>
+            <div class="col-sm-8">
+                <input class="form-control"
+                       th:field="*{title}"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-4">
+                <label class="col-form-label" th:text="#{issue.content}"></label>
+            </div>
+            <div class="col-sm-8">
+                <input class="form-control"
+                       th:field="*{content}"/>
+            </div>
+        </div>
+
+        <div class="row float-right">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}"></button>
+            <a th:if="${issue.id != null}" th:href="@{'/issue/delete/' + ${issue.id}}"
+               class="btn btn-danger" th:text="#{common.delete}"></a>
+            <a th:href="@{/issue}" class="btn btn-default" th:text="#{common.back}"></a>
+        </div>
+
+    </form>
+
+
+</section>
+
+</body>
+</html>
