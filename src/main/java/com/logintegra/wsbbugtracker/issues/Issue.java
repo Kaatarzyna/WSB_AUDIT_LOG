@@ -6,6 +6,7 @@ import com.logintegra.wsbbugtracker.projects.Project;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
@@ -19,12 +20,14 @@ public class Issue {
     @GeneratedValue
     Long id;
 
+    @Audited
     @Column(nullable = false)
     String title;
 
     @Column(columnDefinition = "TEXT")
     String content;
 
+    @Audited
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     State state = State.TODO;

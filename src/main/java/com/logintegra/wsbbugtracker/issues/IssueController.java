@@ -1,10 +1,18 @@
 package com.logintegra.wsbbugtracker.issues;
 
+import com.logintegra.wsbbugtracker.audit.AuditDataDTO;
 import com.logintegra.wsbbugtracker.people.PersonRepository;
 import com.logintegra.wsbbugtracker.projects.ProjectRepository;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/issue")
@@ -13,11 +21,13 @@ public class IssueController {
     final IssueRepository issueRepository;
     final ProjectRepository projectRepository;
     final PersonRepository personRepository;
+    final EntityManager entityManager;
 
-    public IssueController(IssueRepository issueRepository, ProjectRepository projectRepository, PersonRepository personRepository) {
+    public IssueController(IssueRepository issueRepository, ProjectRepository projectRepository, PersonRepository personRepository, EntityManager entityManager) {
         this.issueRepository = issueRepository;
         this.projectRepository = projectRepository;
         this.personRepository = personRepository;
+        this.entityManager = entityManager;
     }
 
     @GetMapping
@@ -64,5 +74,24 @@ public class IssueController {
         issueRepository.delete(issue);
 
         return "redirect:/issue";
+    }
+
+    @GetMapping("/history/{id}")
+    ModelAndView history(@PathVariable Long id) {
+        ModelAndView modelAndView = new ModelAndView("issue/history");
+
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+        List<AuditDataDTO> revisions = (List<AuditDataDTO>) auditReader.createQuery()
+                .forRevisionsOfEntity(Issue.class, false, true)
+                .add(AuditEntity.id().eq(id))
+                .getResultList()
+                .stream()
+                .map(r -> new AuditDataDTO((Object[]) r))
+                .collect(Collectors.toList());
+
+        modelAndView.addObject("revisions", revisions);
+
+        return modelAndView;
     }
 }

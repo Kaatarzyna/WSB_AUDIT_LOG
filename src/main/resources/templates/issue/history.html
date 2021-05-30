@@ -18,19 +18,17 @@
 <body>
 
 <section class="container">
-    <h3 th:text="#{nav.issues}" class="pb-3"></h3>
 
-    <a th:href="@{/issue/create}" th:text="#{common.newIssue}"></a>
+    <h2 th:text="#{common.history}"></h2>
 
-    <div th:each="issue : ${issues}">
-        <span><a th:href="@{'/issue/' + ${issue.id}}" th:text="${issue.id}"></a></span> |
-        <span th:text="${issue.project.name}"></span> |
-        <span th:text="${issue.state}"></span> |
-        <span th:text="${issue.title}"></span> |
-        <span th:text="${issue.content}"></span> |
-        <span th:if="${issue.assignee != null}" th:text="${issue.assignee.name}"></span> |
-        <a th:href="@{'/issue/history/' + ${issue.getId()}}" th:text="#{common.history}"></a>
+    <div class="row" th:each="revision : ${revisions}">
+        <span th:text="${revision.getDate()}"></span> |
+        <span th:text="${revision.getActor()}"></span> |
+        <span th:text="${revision.getRevisionType()}"></span> |
+        <span th:text="${revision.getTitle()}"></span> |
+        <span th:text="${revision.getState()}"></span>
     </div>
+
 </section>
 
 </body>
