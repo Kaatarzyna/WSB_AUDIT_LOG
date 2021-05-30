@@ -7,12 +7,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 public class Issue {
 
@@ -40,5 +47,18 @@ public class Issue {
     @JoinColumn(name = "project_id", nullable = false)
     Project project;
 
+    @Column(updatable = false)
+    @CreatedBy
+    String createdBy;
+
+    @Column(updatable = false)
+    @CreatedDate
+    Date createdDate;
+
+    @LastModifiedBy
+    String lastModifiedBy;
+
+    @LastModifiedDate
+    Date lastModifiedDate;
 
 }
