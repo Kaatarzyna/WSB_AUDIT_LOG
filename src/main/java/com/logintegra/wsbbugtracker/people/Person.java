@@ -21,4 +21,10 @@ public class Person {
     String username;
     String password;
 
+    public Person(String username, String password, String name) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+    }
+
 }
