@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 @RevisionEntity(AuditingRevisionListener.class)
 @Entity

@@ -17,52 +17,42 @@
 package com.logintegra.wsbbugtracker.config;
 
 import com.logintegra.wsbbugtracker.people.MyUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * Na podstawie <https://github.com/spring-projects/spring-security/blob/5.4.2/samples/boot/helloworld/src/main/java/org/springframework/security/samples/config/SecurityConfig.java></https://github.com/spring-projects/spring-security/blob/5.4.2/samples/boot/helloworld/src/main/java/org/springframework/security/samples/config/SecurityConfig.java>
- */
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig  {
+    private final MyUserDetailsService customUserDetailsService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private final MyUserDetailsService userDetailsService;
-
-    @Autowired
-    public SecurityConfig(MyUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests((authorize) -> authorize
-                .antMatchers("/css/**", "/index").permitAll()
-                .antMatchers("/issue/**").authenticated()
-                .antMatchers("/project/**").authenticated()
-        ).formLogin((formLogin) -> formLogin
-                .loginPage("/login")
-                .failureUrl("/login-error")
-        );
-    }
-
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
+    public SecurityConfig(MyUserDetailsService customUserDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .authorizeHttpRequests()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().loginPage("/login").permitAll();
+
+        return httpSecurity.build();
     }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+
+        provider.setPasswordEncoder(bCryptPasswordEncoder);
+        provider.setUserDetailsService(customUserDetailsService);
+
+        return provider;
+    }
+
 }
