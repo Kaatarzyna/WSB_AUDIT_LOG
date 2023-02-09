@@ -1,6 +1,7 @@
 package com.logintegra.wsbbugtracker.issues;
 
 import com.logintegra.wsbbugtracker.audit.AuditDataDTO;
+import com.logintegra.wsbbugtracker.audit.AuditDataMapper;
 import com.logintegra.wsbbugtracker.people.PersonRepository;
 import com.logintegra.wsbbugtracker.projects.ProjectRepository;
 import org.hibernate.envers.AuditReader;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.persistence.EntityManager;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +72,7 @@ public class IssueController {
 
     @GetMapping("/delete/{id}")
     String delete(@PathVariable Long id) {
-        Issue issue = issueRepository.getOne(id);
+        Issue issue = issueRepository.getReferenceById(id);
         issueRepository.delete(issue);
 
         return "redirect:/issue";
@@ -82,15 +84,12 @@ public class IssueController {
 
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
-        List<AuditDataDTO> revisions = (List<AuditDataDTO>) auditReader.createQuery()
+        List<Object[]> rawRevisions = (List<Object[]>) auditReader.createQuery()
                 .forRevisionsOfEntity(Issue.class, false, true)
                 .add(AuditEntity.id().eq(id))
-                .getResultList()
-                .stream()
-                .map(r -> new AuditDataDTO((Object[]) r))
-                .collect(Collectors.toList());
+                .getResultList();
 
-        modelAndView.addObject("revisions", revisions);
+        modelAndView.addObject("revisions", AuditDataMapper.map(rawRevisions));
 
         return modelAndView;
     }
