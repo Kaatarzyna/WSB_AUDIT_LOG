@@ -39,11 +39,11 @@ public class IssueController {
         return modelAndView;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     ModelAndView show(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("issue/show");
 
-        modelAndView.addObject("issue", issueRepository.getOne(id));
+        modelAndView.addObject("issue", issueRepository.getReferenceById(id));
         modelAndView.addObject("projects", projectRepository.findAll());
         modelAndView.addObject("people", personRepository.findAll());
 

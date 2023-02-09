@@ -16,7 +16,7 @@ public class SecurityController {
 
     @PostMapping(path = "/")
     String signIn() {
-        return "redirect:issue/index";
+        return "redirect:/issue";
     }
 
     @RequestMapping("/login-error")
