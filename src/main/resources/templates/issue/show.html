@@ -6,6 +6,7 @@
     <title th:text="#{application.name}"></title>
 
     <link rel="shortcut icon" href="/images/favicon.png">
+    <script src="/js/script.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
             integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
@@ -42,7 +43,7 @@
                 <label class="col-form-label" th:text="#{issue.state}"></label>
             </div>
             <div class="col-sm-8">
-                <select class="form-control" th:field="*{state}" id="state-select">
+                <select class="form-control" th:field="*{state}" id="state-select" onchange="setState()">
                     <option th:value="${null}"></option>
                     <option th:each="s : ${T(com.logintegra.wsbbugtracker.enums.State).values()}"
                             th:text="${#messages.msg('state.' + s)}"

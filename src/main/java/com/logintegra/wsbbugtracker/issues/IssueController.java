@@ -1,11 +1,13 @@
 package com.logintegra.wsbbugtracker.issues;
 
 import com.logintegra.wsbbugtracker.audit.AuditDataDTO;
+import com.logintegra.wsbbugtracker.enums.State;
 import com.logintegra.wsbbugtracker.people.PersonRepository;
 import com.logintegra.wsbbugtracker.projects.ProjectRepository;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,19 +15,20 @@ import org.springframework.web.servlet.ModelAndView;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/issue")
 public class IssueController {
 
     final IssueRepository issueRepository;
+    final IssueService issueService;
     final ProjectRepository projectRepository;
     final PersonRepository personRepository;
     final EntityManager entityManager;
 
-    public IssueController(IssueRepository issueRepository, ProjectRepository projectRepository, PersonRepository personRepository, EntityManager entityManager) {
+    public IssueController(IssueRepository issueRepository, IssueService issueService, ProjectRepository projectRepository, PersonRepository personRepository, EntityManager entityManager) {
         this.issueRepository = issueRepository;
+        this.issueService = issueService;
         this.projectRepository = projectRepository;
         this.personRepository = personRepository;
         this.entityManager = entityManager;
@@ -92,5 +95,11 @@ public class IssueController {
         modelAndView.addObject("revisions", revisions);
 
         return modelAndView;
+    }
+
+    @PatchMapping("/state/{id}")
+    ResponseEntity<Void> updateState(@PathVariable Long id, @RequestBody State state) {
+        issueService.updateState(id, state);
+        return ResponseEntity.ok().build();
     }
 }
