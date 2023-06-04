@@ -19,6 +19,7 @@ package com.logintegra.wsbbugtracker.config;
 import com.logintegra.wsbbugtracker.people.MyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -57,6 +58,11 @@ public class SecurityConfig  {
         provider.setUserDetailsService(customUserDetailsService);
 
         return provider;
+    }
+
+    @Bean
+    AuditorAware<String> auditorProvider() {
+        return new SpringSecurityAuditorAware();
     }
 
 }

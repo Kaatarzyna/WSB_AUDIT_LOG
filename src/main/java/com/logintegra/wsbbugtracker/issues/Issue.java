@@ -6,6 +6,8 @@ import com.logintegra.wsbbugtracker.projects.Project;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import jakarta.persistence.*;
 import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,7 +15,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -47,18 +48,20 @@ public class Issue {
     @JoinColumn(name = "project_id", nullable = false)
     Project project;
 
-    @Column(updatable = false)
-    @CreatedBy
-    String createdBy;
-
-    @Column(updatable = false)
     @CreatedDate
-    Date createdDate;
-
-    @LastModifiedBy
-    String lastModifiedBy;
+    @Column(updatable = false)
+    Date dateCreated;
 
     @LastModifiedDate
-    Date lastModifiedDate;
+    @Column
+    Date lastUpdated;
+
+    @CreatedBy
+    @Column(updatable = false)
+    String createdBy;
+
+    @LastModifiedBy
+    @Column
+    String lastUpdatedBy;
 
 }

@@ -7,17 +7,13 @@
 
     <link rel="shortcut icon" href="/images/favicon.png">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
-            integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
-            crossorigin="anonymous"></script>
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet"
           type="text/css"/>
 </head>
 <body>
 
-<section class="container">
+<div class="container">
 
     <h2 th:text="#{common.history}"></h2>
 
@@ -28,8 +24,6 @@
         <span th:text="${revision.getTitle()}"></span> |
         <span th:text="${revision.getState()}"></span>
     </div>
-
-</section>
-
+</div>
 </body>
 </html>

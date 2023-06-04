@@ -21,10 +21,10 @@ public class AuditDataDTO {
     State state;
 
     public AuditDataDTO(Object[] revision) {
-        AuditedRevisionEntity revisionEntity = ((AuditedRevisionEntity) revision[1]);
+        AuditedRevisionEntity auditedRevisionEntity = (AuditedRevisionEntity) revision[1];
 
-        this.date = new Date(revisionEntity.getTimestamp());
-        this.actor = revisionEntity.getActor();
+        this.date = new Date(auditedRevisionEntity.getTimestamp());
+        this.actor = auditedRevisionEntity.getActor();
 
         this.revisionType = (RevisionType) revision[2];
 
@@ -32,6 +32,4 @@ public class AuditDataDTO {
         this.title = issue.getTitle();
         this.state = issue.getState();
     }
-
-
 }
